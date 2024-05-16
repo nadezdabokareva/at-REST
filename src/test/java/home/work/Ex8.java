@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class Ex8 {
 
     @Test
-    public void testEx8()  {
+    public void testEx8() throws InterruptedException {
         //1 запрос без токена
         JsonPath response = RestAssured
                 .given()
@@ -32,19 +32,22 @@ public class Ex8 {
 
         //проверяем поле статус
         Assertions.assertEquals(responseWithToken1.get("status"), "Job is NOT ready");
-//
-//        //ждем кол-во секунд из первого запроса
-//
-//
-//        //делаем запрос с токеном
-//        Response responseWithToken2 = RestAssured
-//                .given()
-//                .get("https://playground.learnqa.ru/ajax/api/longtime_job/?token="+token)
-//                .andReturn();
-//        responseWithToken2.prettyPrint();
-//
-//
-//        //проверяем поле статус
-//        Assertions.assertEquals(response.get("status"), "Job is ready");
+
+        //ждем кол-во секунд из первого запроса
+        Thread.sleep(seconds*1000);
+
+
+        //делаем запрос с токеном
+        JsonPath responseWithToken2 = RestAssured
+                .given()
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job/?token="+token)
+                .jsonPath();
+
+        responseWithToken2.prettyPrint();
+
+
+        //проверяем поле статус, результат
+        Assertions.assertEquals(responseWithToken2.get("status"), "Job is ready");
+        Assertions.assertEquals(responseWithToken2.get("result"), "42");
     }
 }
