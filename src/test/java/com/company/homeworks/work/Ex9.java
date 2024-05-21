@@ -18,7 +18,8 @@ public class Ex9 {
     private String cookie;
     List<String> passwords = List.of(
             "123456",
-            "123456789");
+            "123456789",
+            "12345");
 
     @Test
     public void passwordTest() {
