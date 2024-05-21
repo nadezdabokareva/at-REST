@@ -21,6 +21,7 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:5.1.1'
     testImplementation 'io.qameta.allure:allure-junit5:2.13.0'
     testImplementation 'io.qameta.allure:allure-rest-assured:2.19.0'
+    testImplementation 'org.hamcrest:hamcrest-all:1.3'
 
 }
 
