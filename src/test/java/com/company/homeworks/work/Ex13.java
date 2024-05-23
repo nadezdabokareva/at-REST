@@ -20,6 +20,7 @@ public class Ex13 {
      public void userAgentCheckTest (String platform, String browser, String device) {
         JsonPath getUserAgent = RestAssured
                 .given()
+                .headers("platform", platform)
                 .when()
                 .get(user_agent_check)
                 .jsonPath();
