@@ -2,6 +2,7 @@ package com.company.homeworks;
 
 import io.restassured.RestAssured;
 import io.restassured.http.Headers;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
@@ -69,6 +70,8 @@ public class Cookie {
         String responseCookie = responseForGet.getCookie("auth_cookie");
         Map<String, String> cookies = new HashMap<>();
         cookies.put("auth_cookie", responseCookie);
+        System.out.println(responseCookie);
+        System.out.println(cookies);
 
         Response responseForCheck = RestAssured
                 .given()
