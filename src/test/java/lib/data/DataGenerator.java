@@ -1,4 +1,4 @@
-package lib;
+package lib.data;
 
 import org.apache.commons.lang3.RandomStringUtils;
 

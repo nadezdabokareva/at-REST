@@ -1,4 +1,4 @@
-package lib;
+package lib.dto;
 
 import java.util.HashMap;
 import java.util.Map;

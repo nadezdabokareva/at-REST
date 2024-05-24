@@ -3,10 +3,12 @@ package tests.userAuthTest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.*;
+import lib.data.DataForTest;
+import lib.dto.User;
 import org.junit.jupiter.api.Test;
 
-import static lib.BaseUrl.baseUrl;
-import static lib.BaseUrl.userRegistration;
+import static lib.data.BaseUrl.baseUrl;
+import static lib.data.BaseUrl.userRegistration;
 
 public class UserRegistrationTest extends BaseTestCase {
 
@@ -14,7 +16,8 @@ public class UserRegistrationTest extends BaseTestCase {
     public void testCreateUserWithExistingEmail() {
         Response responseCreateAuth = RestAssured
                 .given()
-                .body(User.createUserData(DataForTest.existingEmail,
+                .body(User.createUserData(
+                        DataForTest.existingEmail,
                         DataForTest.password,
                         DataForTest.username,
                         DataForTest.firstName,
@@ -30,7 +33,8 @@ public class UserRegistrationTest extends BaseTestCase {
     public void testCreateNewUser() {
         Response responseCreateAuth = RestAssured
                 .given()
-                .body(User.createUserData(DataForTest.email,
+                .body(User.createUserData(
+                        DataForTest.email,
                         DataForTest.password,
                         DataForTest.username,
                         DataForTest.firstName,

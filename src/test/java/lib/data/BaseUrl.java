@@ -1,4 +1,4 @@
-package lib;
+package lib.data;
 
 public class BaseUrl {
     public static String baseUrl = "https://playground.learnqa.ru";

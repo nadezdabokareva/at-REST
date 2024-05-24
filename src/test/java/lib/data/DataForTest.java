@@ -1,4 +1,4 @@
-package lib;
+package lib.data;
 
 public class DataForTest {
     public static String existingEmail = "vinkotov@example.com";
@@ -11,4 +11,11 @@ public class DataForTest {
     public static String id = "id";
     public static int successfulStatusCode = 200;
     public static int badStatusCode = 400;
+    public static String testId = "2";
+    public static String usernameField = "username";
+    public static String firstNameField = "firstName";
+    public static String lastNameField = "lastName";
+    public static String emailField = "email";
+
+
 }
