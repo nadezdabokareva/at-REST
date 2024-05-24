@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lib.Assertions;
 import lib.BaseTestCase;
+import lib.BaseUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,7 +29,7 @@ public class UserAuthTest extends BaseTestCase {
         Response responseGetAuth = RestAssured
                 .given()
                 .body(authData)
-                .post("https://playground.learnqa.ru/api/user/login")
+                .post(BaseUrl.baseUrl + BaseUrl.userLogin)
                 .andReturn();
 
         this.cookie = this.getCookie(responseGetAuth, "auth_sid");
@@ -42,7 +43,7 @@ public class UserAuthTest extends BaseTestCase {
                 .given()
                 .header("x-csrf-token", this.header)
                 .cookie("auth_sid", this.cookie)
-                .get("https://playground.learnqa.ru/api/user/auth")
+                .get(BaseUrl.baseUrl + BaseUrl.userAuth)
                 .andReturn();
 
         Assertions.assertJsonByName(responseCheckUAuth, "user_id", this.userIdOnAuth);
@@ -52,7 +53,7 @@ public class UserAuthTest extends BaseTestCase {
     @ValueSource(strings = {"cookie, headers"})
     public void testNegativeAuthUser(String condition) {
         RequestSpecification spec = RestAssured.given();
-        spec.baseUri("https://playground.learnqa.ru/api/user/auth");
+        spec.baseUri(BaseUrl.baseUrl + BaseUrl.userAuth);
 
         if (condition.equals("cookie")) {
             spec.cookie("auth_sid", this.cookie);
