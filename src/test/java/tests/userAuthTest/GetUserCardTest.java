@@ -2,24 +2,22 @@ package tests.userAuthTest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import lib.BaseUrl;
-import lib.DataGenerator;
-import lib.User;
+import lib.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static lib.BaseUrl.baseUrl;
 
-public class GetUserCardTest {
+public class GetUserCardTest extends BaseTestCase {
     private String email = DataGenerator.emailGenerator();
     private String password = "1234";
     private String username = "learnqa";
     private String firstName = "learnqa";
     private String lastName = "learnqa";
+    private String testId = "2";
     String id;
 
     BaseUrl api;
-
 
     @BeforeEach
     public void createUser() {
@@ -41,6 +39,20 @@ public class GetUserCardTest {
                 .andReturn();
 
         getUserCard.print();
+
+
+    }
+
+    @Test
+    public void getAuthUserCard(){
+        Response getUserCard = RestAssured
+                .given()
+                .get((baseUrl + api.userCard(testId)))
+                .andReturn();
+
+        getUserCard.print();
+
+        Assertions.assertJsonHasKey("");
 
 
     }

@@ -14,6 +14,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.HashMap;
 import java.util.Map;
 
+import static lib.BaseUrl.*;
+
 public class UserAuthTest extends BaseTestCase {
 
     String cookie;
@@ -29,7 +31,7 @@ public class UserAuthTest extends BaseTestCase {
         Response responseGetAuth = RestAssured
                 .given()
                 .body(authData)
-                .post(BaseUrl.baseUrl + BaseUrl.userLogin)
+                .post(baseUrl + userLogin)
                 .andReturn();
 
         this.cookie = this.getCookie(responseGetAuth, "auth_sid");
@@ -43,7 +45,7 @@ public class UserAuthTest extends BaseTestCase {
                 .given()
                 .header("x-csrf-token", this.header)
                 .cookie("auth_sid", this.cookie)
-                .get(BaseUrl.baseUrl + BaseUrl.userAuth)
+                .get(baseUrl + userAuth)
                 .andReturn();
 
         Assertions.assertJsonByName(responseCheckUAuth, "user_id", this.userIdOnAuth);
@@ -53,7 +55,7 @@ public class UserAuthTest extends BaseTestCase {
     @ValueSource(strings = {"cookie, headers"})
     public void testNegativeAuthUser(String condition) {
         RequestSpecification spec = RestAssured.given();
-        spec.baseUri(BaseUrl.baseUrl + BaseUrl.userAuth);
+        spec.baseUri(baseUrl + userAuth);
 
         if (condition.equals("cookie")) {
             spec.cookie("auth_sid", this.cookie);
