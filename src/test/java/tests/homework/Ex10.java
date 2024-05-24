@@ -1,4 +1,4 @@
-package com.company.homeworks.work;
+package tests.homework;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Assertions;

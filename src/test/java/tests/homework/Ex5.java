@@ -1,4 +1,4 @@
-package com.company.homeworks.work;
+package tests.homework;
 
 import com.company.homeworks.client.GetJsonHomeworkClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
