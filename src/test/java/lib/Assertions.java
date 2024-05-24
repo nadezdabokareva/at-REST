@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Assertions {
 
-    public static void assertJsomByName (Response Response, String name, int expectedValue) {
+    public static void assertJsonByName(Response Response, String name, int expectedValue) {
         Response.then().assertThat().body("$", hasKey(name));
         int value = Response.jsonPath().getInt(name);
         assertEquals(expectedValue, value, "JSON value is not to expected value");
@@ -27,5 +27,9 @@ public class Assertions {
                 Response.getStatusCode(),
                 "something went wrong"
         );
+    }
+
+    public static void assertJsonHasKey(Response Response, String expectedKey) {
+        Response.then().assertThat().body("$", hasKey(expectedKey));
     }
 }

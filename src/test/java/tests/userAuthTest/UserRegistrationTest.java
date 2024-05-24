@@ -18,7 +18,9 @@ public class UserRegistrationTest extends BaseTestCase {
     String firstName = "learnqa";
     String lastName = "learnqa";
     String answer = "Users with email \'" + existingEmail +"\' already exists";
+    String id = "id";
     int badStatusCode = 400;
+    int successfulStatusCode = 200;
 
     @Test
     public void testCreateUserWithExistingEmail() {
@@ -39,9 +41,10 @@ public class UserRegistrationTest extends BaseTestCase {
                 .body(User.createUserData(email, password, username, firstName, lastName))
                 .post("https://playground.learnqa.ru/api/user/")
                 .andReturn();
+        responseCreateAuth.print();
 
-        Assertions.assertResponseTextEquals(responseCreateAuth, answer);
-        Assertions.assertResponseCodeEquals(responseCreateAuth, badStatusCode);
+        Assertions.assertResponseCodeEquals(responseCreateAuth, successfulStatusCode);
+        Assertions.assertJsonHasKey(responseCreateAuth, id);
     }
 
 }
