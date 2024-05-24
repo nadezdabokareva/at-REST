@@ -13,23 +13,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserRegistrationTest extends BaseTestCase {
-
+    public static User user;
     String email = "vinkotov@example.com";
+    String password = "1234";
+    String username = "learnqa";
+    String firstName = "learnqa";
+    String lastName = "learnqa";
     String answer = "Users with email \'" + email +"\' already exists";
     int badStatusCode = 400;
 
     @Test
     public void testCreateUserWithExistingEmail() {
-        Map<String, String> userData = new HashMap<>();
-        userData.put("email", email);
-        userData.put("password", "1234");
-        userData.put("username", "learnqa");
-        userData.put("firstName", "learnqa");
-        userData.put("lastName", "learnqa");
-
         Response responseCreateAuth = RestAssured
                 .given()
-                .body(userData)
+                .body(User.createUserData(email, password, username, firstName, lastName))
                 .post("https://playground.learnqa.ru/api/user/")
                 .andReturn();
 

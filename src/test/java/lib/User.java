@@ -1,11 +1,15 @@
 package lib;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
 
-    String email;
-    String password;
-    String username;
-    String firstName;
+    private static String email;
+    private static String password;
+    private static String username;
+    private static String firstName;
+    private static String lastName;
 
     public User(String email, String password, String username, String firstName, String lastName) {
         this.email = email;
@@ -14,8 +18,6 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
     }
-
-    String lastName;
 
     public String getEmail() {
         return email;
@@ -57,6 +59,14 @@ public class User {
         this.lastName = lastName;
     }
 
-
+    public static Map<String, String> createUserData(String email, String password, String username, String firstName, String lastName) {
+        Map<String, String> userData = new HashMap<>();
+        userData.put("email", email);
+        userData.put("password", password);
+        userData.put("username", username);
+        userData.put("firstName", firstName);
+        userData.put("lastName", lastName);
+        return userData;
+    }
 
 }
