@@ -12,11 +12,16 @@ import java.util.Map;
 
 import static lib.data.BaseUrl.baseUrl;
 import static lib.data.BaseUrl.userLogin;
+import static lib.data.DataForTest.*;
 
 public class GetUserCardTest extends BaseTestCase {
     String id;
-
     BaseUrl api;
+    String cookie;
+    String header;
+
+    public static String authSid = "auth_sid";
+    public static String csrfToken = "x-csrf-token";
 
     @Test
     public void getJustCreatedUserCard(){
@@ -29,7 +34,7 @@ public class GetUserCardTest extends BaseTestCase {
                 .get((baseUrl + api.userCard(id)))
                 .andReturn();
 
-        Assertions.assertJsonHasKey(getUserCard, DataForTest.usernameField);
+        Assertions.assertJsonHasField(getUserCard, usernameField);
     }
 
     @Test
@@ -39,38 +44,18 @@ public class GetUserCardTest extends BaseTestCase {
                 .get((baseUrl + api.userCard(DataForTest.testId)))
                 .andReturn();
 
-        Assertions.assertJsonHasKey(getUserCard, DataForTest.usernameField);
-        Assertions.assertJsonHasNotKey(getUserCard, DataForTest.firstNameField);
-        Assertions.assertJsonHasNotKey(getUserCard, DataForTest.lastNameField);
-        Assertions.assertJsonHasNotKey(getUserCard, DataForTest.emailField);
+        Assertions.assertJsonHasField(getUserCard, usernameField);
+        Assertions.assertJsonHasNotField(getUserCard, firstNameField);
+        Assertions.assertJsonHasNotField(getUserCard, lastNameField);
+        Assertions.assertJsonHasNotField(getUserCard, DataForTest.emailField);
 
     }
 
     @Test
     public void getAuthUserCard(){
-        String cookie = this.getCookie(authUser(), "auth_sid");
-        String header = this.getHeader(authUser(), "x-csrf-token");
-
-        authUser();
-
-        Response getUserCard = RestAssured
-                .given()
-                .header("x-csrf-token", header)
-                .cookie("auth_sid", cookie)
-                .get((baseUrl + api.userCard(DataForTest.testId)))
-                .andReturn();
-
-        Assertions.assertJsonHasKey(getUserCard, DataForTest.usernameField);
-        Assertions.assertJsonHasKey(getUserCard, DataForTest.firstNameField);
-        Assertions.assertJsonHasKey(getUserCard, DataForTest.lastNameField);
-        Assertions.assertJsonHasKey(getUserCard, DataForTest.emailField);
-
-    }
-
-    public Response authUser() {
         Map<String, String> authData = new HashMap<>();
         authData.put(DataForTest.emailField, DataForTest.existingEmail);
-        authData.put(DataForTest.password, DataForTest.password);
+        authData.put(DataForTest.passwordField, DataForTest.password);
 
         Response responseGetAuth = RestAssured
                 .given()
@@ -78,8 +63,21 @@ public class GetUserCardTest extends BaseTestCase {
                 .post(baseUrl + userLogin)
                 .andReturn();
 
-        return responseGetAuth;
+        this.cookie = this.getCookie(responseGetAuth, authSid);
+        this.header = this.getHeader(responseGetAuth, csrfToken);
 
+        Response getUserCard = RestAssured
+                .given()
+                .header(csrfToken, header)
+                .cookie(authSid, cookie)
+                .get((baseUrl + api.userCard(DataForTest.testId)))
+                .andReturn();
+
+        getUserCard.print();
+
+        String[] expectedFieldsForCard = {"id", "username", "email", "firstName", "lastName"};
+
+        Assertions.assertJsonHasFields(getUserCard, expectedFieldsForCard);
     }
 
 }

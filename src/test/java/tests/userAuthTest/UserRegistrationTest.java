@@ -44,7 +44,7 @@ public class UserRegistrationTest extends BaseTestCase {
         responseCreateAuth.print();
 
         Assertions.assertResponseCodeEquals(responseCreateAuth, DataForTest.successfulStatusCode);
-        Assertions.assertJsonHasKey(responseCreateAuth, DataForTest.id);
+        Assertions.assertJsonHasField(responseCreateAuth, DataForTest.id);
     }
 
 }

@@ -16,6 +16,8 @@ public class DataForTest {
     public static String firstNameField = "firstName";
     public static String lastNameField = "lastName";
     public static String emailField = "email";
+    public static String passwordField = "password";
+//    public static String[] expectedFieldsForCard = {usernameField, firstNameField, lastNameField, emailField};
 
 
 }
