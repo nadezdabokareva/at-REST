@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lib.Assertions;
 import lib.BaseTestCase;
+import lib.Methods;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,6 +41,7 @@ public class UserAuthTest extends BaseTestCase {
 
     @Test
     public void testAuthUser() {
+
         Response responseCheckUAuth = RestAssured
                 .given()
                 .header("x-csrf-token", this.header)

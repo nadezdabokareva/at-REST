@@ -25,7 +25,7 @@ public class GetUserCardTest extends BaseTestCase {
 
     @Test
     public void getJustCreatedUserCard(){
-        Response responseCreateAuth = Methods.getResponse();
+        Response responseCreateAuth = Methods.createUser();
 
         String id = responseCreateAuth.jsonPath().getString("id");
 
