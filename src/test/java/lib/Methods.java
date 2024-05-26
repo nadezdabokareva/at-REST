@@ -18,7 +18,7 @@ public class Methods {
     public static String email = emailGenerator();
 
     public static Response createUser() {
-        Response responseCreateUser = RestAssured
+        Response responseCreateAuth = RestAssured
                 .given()
                 .body(User.createUserData(
                         email,
@@ -28,7 +28,8 @@ public class Methods {
                         lastName))
                 .post(baseUrl + BaseUrl.userRegistration)
                 .andReturn();
-        return responseCreateUser;
+        
+        return responseCreateAuth;
     }
 
 

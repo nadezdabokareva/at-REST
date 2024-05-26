@@ -45,4 +45,10 @@ public class Assertions {
             Assertions.assertJsonHasField(Response, Arrays.toString(expectedFieldsNames));
         }
     }
+
+    public static void assertJsonByNameString(Response Response, String name, String expectedValue) {
+        Response.then().assertThat().body("$", hasKey(name));
+        String value = Response.jsonPath().getString(name);
+        assertEquals(expectedValue, value, "JSON value is not to expected value");
+    }
 }

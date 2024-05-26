@@ -2,9 +2,11 @@ package tests.userAuthTest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import lib.Assertions;
 import lib.Methods;
 import lib.data.BaseUrl;
 import lib.dto.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -14,14 +16,13 @@ import static lib.data.BaseUrl.*;
 import static lib.data.DataForTest.*;
 
 public class EditUserCardTest {
+    public String cookie;
+    public String header;
 
-    BaseUrl api;
 
     @Test
     public void editJustCreatedUserCardTest(){
-        //создание нового юзера и получение id
-//        Response responseCreateAuth = Methods.createUser();
-
+        //создаем нового пользователя
         Response responseCreateAuth = RestAssured
                 .given()
                 .body(User.createUserData(
@@ -36,8 +37,6 @@ public class EditUserCardTest {
         String id = responseCreateAuth.jsonPath().getString("id");
 
         //авторизация ранее созданного юзера
-//        Response authUserData = Methods.authUser();
-//        authUserData.print();
         Map<String, String> authData = new HashMap<>();
         authData.put(emailField, email);
         authData.put(passwordField, password);
@@ -48,16 +47,14 @@ public class EditUserCardTest {
                 .post(baseUrl + userLogin)
                 .andReturn();
 
-        String cookie = authUserData.getCookie("auth_sid");
-        String header = authUserData.getHeader("x-csrf-token");
-        System.out.println(cookie);
-        System.out.println(header);
-
+        cookie = authUserData.getCookie("auth_sid");
+        header = authUserData.getHeader("x-csrf-token");
 
         //создание данных для изменения
         Map<String, String> editData = new HashMap<>();
         editData.put(firstNameField, newName);
 
+        //изменяем данные пользователя
         Response responseEditUser = RestAssured
                 .given()
                 .header("x-csrf-token", header)
@@ -67,6 +64,7 @@ public class EditUserCardTest {
                 .andReturn();
         responseEditUser.prettyPrint();
 
+        //проверяем, что данные изменились
         Response responseUserDataAfterEdit = RestAssured
                 .given()
                 .header("x-csrf-token", header)
@@ -74,9 +72,6 @@ public class EditUserCardTest {
                 .get(baseUrl +userCard(id))
                 .andReturn();
 
-        System.out.println(responseUserDataAfterEdit.asString());
-
-
-
+        Assertions.assertJsonByNameString(responseUserDataAfterEdit, firstNameField, newName);
     }
 }
