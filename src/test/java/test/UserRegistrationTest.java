@@ -1,4 +1,4 @@
-package tests.userAuthTest;
+package test;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;

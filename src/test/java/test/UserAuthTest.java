@@ -1,12 +1,15 @@
-package tests.userAuthTest;
+package test;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lib.Assertions;
 import lib.BaseTestCase;
-import lib.Methods;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -16,6 +19,8 @@ import java.util.Map;
 
 import static lib.data.BaseUrl.*;
 
+@Epic("Authorization cases")
+@Feature("Authorization")
 public class UserAuthTest extends BaseTestCase {
 
     String cookie;
@@ -40,6 +45,8 @@ public class UserAuthTest extends BaseTestCase {
     }
 
     @Test
+    @Description("Successful auth")
+    @DisplayName("authUserTest")
     public void authUserTest() {
 
         Response responseCheckUAuth = RestAssured

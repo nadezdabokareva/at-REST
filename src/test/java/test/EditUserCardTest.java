@@ -1,12 +1,10 @@
-package tests.userAuthTest;
+package test;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.Assertions;
-import lib.Methods;
 import lib.data.BaseUrl;
 import lib.dto.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

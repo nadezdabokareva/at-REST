@@ -8,6 +8,7 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
+def allureVersion = '2.25.0'
 
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.32'
@@ -28,8 +29,12 @@ dependencies {
     testImplementation 'org.junit.platform:junit-platform-suite:1.10.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
 
+    testImplementation platform("io.qameta.allure:allure-bom:$allureVersion")
+    testImplementation "io.qameta.allure:allure-junit5"
+
 }
 
 test {
     useJUnitPlatform()
+
 }

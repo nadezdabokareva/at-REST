@@ -1,22 +1,22 @@
 package lib;
 
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.data.BaseUrl;
-import lib.data.DataForTest;
 import lib.dto.User;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static lib.data.BaseUrl.*;
 import static lib.data.DataForTest.*;
 import static lib.data.DataGenerator.emailGenerator;
 
-public class Methods {
+public class ApiCoreResults {
 
     public static String email = emailGenerator();
 
+    @Step("Create user response")
     public static Response createUser() {
         Response responseCreateAuth = RestAssured
                 .given()
@@ -32,7 +32,7 @@ public class Methods {
         return responseCreateAuth;
     }
 
-
+    @Step("Authorization user response")
     public static Response authUser(Map<String, String> authData) {
 
         Response responseGetAuth = RestAssured
@@ -44,6 +44,8 @@ public class Methods {
         return responseGetAuth;
     }
 
+
+    @Step("Authorization user response")
     public static Response editUser(String header,
                                     String cookie,
                                     Map<String, String> editData){
@@ -59,6 +61,7 @@ public class Methods {
         return responseEditUser;
     }
 
+    @Step("Authorization user response")
     public static Response getUserCard(String header,
                                     String cookie,
                                     String id){

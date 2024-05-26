@@ -1,4 +1,4 @@
-package tests.userAuthTest;
+package test;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -22,7 +22,7 @@ public class GetUserCardTest extends BaseTestCase {
 
     @Test
     public void getJustCreatedUserCardTest(){
-        Response responseCreateAuth = Methods.createUser();
+        Response responseCreateAuth = ApiCoreResults.createUser();
 
         String id = responseCreateAuth.jsonPath().getString("id");
 
