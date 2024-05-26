@@ -9,8 +9,7 @@ import lib.dto.User;
 import java.util.HashMap;
 import java.util.Map;
 
-import static lib.data.BaseUrl.baseUrl;
-import static lib.data.BaseUrl.userLogin;
+import static lib.data.BaseUrl.*;
 import static lib.data.DataForTest.*;
 import static lib.data.DataGenerator.emailGenerator;
 
@@ -33,10 +32,7 @@ public class Methods {
     }
 
 
-    public static Response authUser() {
-        Map<String, String> authData = new HashMap<>();
-        authData.put(emailField, email);
-        authData.put(passwordField, password);
+    public static Response authUser(Map<String, String> authData) {
 
         Response responseGetAuth = RestAssured
                 .given()
@@ -46,4 +42,34 @@ public class Methods {
 
         return responseGetAuth;
     }
+
+    public static Response editUser(String header,
+                                    String cookie,
+                                    Map<String, String> editData){
+
+        Response responseEditUser = RestAssured
+                .given()
+                .header("x-csrf-token", header)
+                .cookie("auth_sid", cookie)
+                .body(editData)
+                .put(baseUrl +userCard(id))
+                .andReturn();
+
+        return responseEditUser;
+    }
+
+    public static Response getUserCard(String header,
+                                    String cookie,
+                                    String id){
+
+        Response responseUserDataAfterEdit = RestAssured
+                .given()
+                .header("x-csrf-token", header)
+                .cookie("auth_sid", cookie)
+                .get(baseUrl +userCard(id))
+                .andReturn();
+
+        return responseUserDataAfterEdit;
+    }
+
 }

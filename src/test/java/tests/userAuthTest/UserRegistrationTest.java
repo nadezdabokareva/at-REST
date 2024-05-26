@@ -13,7 +13,7 @@ import static lib.data.BaseUrl.userRegistration;
 public class UserRegistrationTest extends BaseTestCase {
 
     @Test
-    public void testCreateUserWithExistingEmail() {
+    public void createUserWithExistingEmailTest() {
         Response responseCreateAuth = RestAssured
                 .given()
                 .body(User.createUserData(
@@ -30,7 +30,7 @@ public class UserRegistrationTest extends BaseTestCase {
     }
 
     @Test
-    public void testCreateNewUser() {
+    public void createNewUserTest() {
         Response responseCreateAuth = RestAssured
                 .given()
                 .body(User.createUserData(

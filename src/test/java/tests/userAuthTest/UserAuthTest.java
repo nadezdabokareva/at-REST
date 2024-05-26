@@ -40,7 +40,7 @@ public class UserAuthTest extends BaseTestCase {
     }
 
     @Test
-    public void testAuthUser() {
+    public void authUserTest() {
 
         Response responseCheckUAuth = RestAssured
                 .given()
@@ -54,7 +54,7 @@ public class UserAuthTest extends BaseTestCase {
 
     @ParameterizedTest
     @ValueSource(strings = {"cookie, headers"})
-    public void testNegativeAuthUser(String condition) {
+    public void negativeAuthUserTest(String condition) {
         RequestSpecification spec = RestAssured.given();
         spec.baseUri(baseUrl + userAuth);
 

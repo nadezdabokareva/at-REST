@@ -20,11 +20,8 @@ public class GetUserCardTest extends BaseTestCase {
     String cookie;
     String header;
 
-    public static String authSid = "auth_sid";
-    public static String csrfToken = "x-csrf-token";
-
     @Test
-    public void getJustCreatedUserCard(){
+    public void getJustCreatedUserCardTest(){
         Response responseCreateAuth = Methods.createUser();
 
         String id = responseCreateAuth.jsonPath().getString("id");
@@ -38,7 +35,7 @@ public class GetUserCardTest extends BaseTestCase {
     }
 
     @Test
-    public void getNotAuthUserCard(){
+    public void getNotAuthUserCardTest(){
         Response getUserCard = RestAssured
                 .given()
                 .get((baseUrl + api.userCard(DataForTest.testId)))
@@ -52,7 +49,7 @@ public class GetUserCardTest extends BaseTestCase {
     }
 
     @Test
-    public void getAuthUserCard(){
+    public void getAuthUserCardTest(){
         Map<String, String> authData = new HashMap<>();
         authData.put(DataForTest.emailField, DataForTest.existingEmail);
         authData.put(DataForTest.passwordField, DataForTest.password);
