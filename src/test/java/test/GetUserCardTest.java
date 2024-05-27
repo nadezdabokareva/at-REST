@@ -28,6 +28,29 @@ public class GetUserCardTest extends BaseTestCase {
     String cookie;
     String header;
 
+
+    \\Задание 17
+    @Description("Получение данных пользователя с чужим id")
+    @DisplayName("Get user data with else id")
+    @Test
+    public void getUserDataWithElseIdTest(){
+        Response responseCreateAuth = ApiCoreResults.createUser();
+
+        int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
+
+        Response authorizationUser = ApiCoreResults.authorizationWithJustCreatedUser();
+        this.cookie = this.getCookie(authorizationUser, SystemData.authSid);
+        this.header = this.getHeader(authorizationUser, SystemData.csrfToken);
+
+        Response responseGetElseUserData = ApiCoreResults.getUserCard(this.header, this.cookie, String.valueOf(id-1));
+
+        Assertions.assertJsonHasField(responseGetElseUserData, usernameField);
+        Assertions.assertJsonHasNotField(responseGetElseUserData, emailField);
+        Assertions.assertJsonHasNotField(responseGetElseUserData, passwordField);
+        Assertions.assertJsonHasNotField(responseGetElseUserData, firstNameField);
+        Assertions.assertJsonHasNotField(responseGetElseUserData, lastNameField);
+    }
+
     @Description("Получение данных только что зарегистрированного пользователя")
     @DisplayName("Successful get user data")
     @Test
@@ -91,26 +114,7 @@ public class GetUserCardTest extends BaseTestCase {
         Assertions.assertJsonHasFields(getUserCard, expectedFieldsForCard);
     }
 
-    @Description("Получение данных пользователя с чужим id")
-    @DisplayName("Get user data with else id")
-    @Test
-    public void getUserDataWithElseIdTest(){
-        Response responseCreateAuth = ApiCoreResults.createUser();
 
-        int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
-
-        Response authorizationUser = ApiCoreResults.authorizationWithJustCreatedUser();
-        this.cookie = this.getCookie(authorizationUser, SystemData.authSid);
-        this.header = this.getHeader(authorizationUser, SystemData.csrfToken);
-
-        Response responseGetElseUserData = ApiCoreResults.getUserCard(this.header, this.cookie, String.valueOf(id-1));
-
-        Assertions.assertJsonHasField(responseGetElseUserData, usernameField);
-        Assertions.assertJsonHasNotField(responseGetElseUserData, emailField);
-        Assertions.assertJsonHasNotField(responseGetElseUserData, passwordField);
-        Assertions.assertJsonHasNotField(responseGetElseUserData, firstNameField);
-        Assertions.assertJsonHasNotField(responseGetElseUserData, lastNameField);
-    }
 
 
 }
