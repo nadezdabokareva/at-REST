@@ -94,33 +94,18 @@ public class GetUserCardTest extends BaseTestCase {
     @DisplayName("Get user data with else id")
     @Test
     public void getUserDataWithElseIdTest(){
-
-
         Response responseCreateAuth = ApiCoreResults.createUser();
 
         int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
 
-        Map<String, String> authData = new HashMap<>();
-        authData.put(SystemData.emailField, DataForTest.existingEmail);
-        authData.put(SystemData.passwordField, DataForTest.password);
+        Response authorizationUser = ApiCoreResults.authorizationWithJustCreatedUser();
+        this.cookie = this.getCookie(authorizationUser, SystemData.authSid);
+        this.header = this.getHeader(authorizationUser, SystemData.csrfToken);
 
-        Response responseGetAuth = RestAssured
-                .given()
-                .body(authData)
-                .post(baseUrl + userLogin)
-                .andReturn();
+        Response responseGetElseUserData = ApiCoreResults.getUserCard(this.header, this.cookie, String.valueOf(id-1));
 
-        this.cookie = this.getCookie(responseGetAuth, SystemData.authSid);
-        this.header = this.getHeader(responseGetAuth, SystemData.csrfToken);
-
-        Response getUserCard = RestAssured
-                .given()
-                .get((baseUrl + api.userCard(String.valueOf(id-1))))
-                .andReturn();
-
-       getUserCard.print();
+        responseGetElseUserData.print();
     }
-
 
 
 }

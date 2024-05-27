@@ -4,8 +4,11 @@ import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.data.BaseUrl;
+import lib.data.DataForTest;
+import lib.data.SystemData;
 import lib.dto.User;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static lib.data.BaseUrl.*;
@@ -123,4 +126,19 @@ public class ApiCoreResults {
         return responseCreateAuth;
     }
 
+    @Step("Authorization with just created user")
+    public static Response authorizationWithJustCreatedUser() {
+        Map<String, String> authData = new HashMap<>();
+        authData.put(SystemData.emailField, existingEmail);
+        authData.put(SystemData.passwordField, password);
+
+        Response responseGetAuth = RestAssured
+                .given()
+                .body(authData)
+                .post(baseUrl + userLogin)
+                .andReturn();
+
+
+        return responseGetAuth;
+    }
 }
