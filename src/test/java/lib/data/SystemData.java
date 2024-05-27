@@ -10,6 +10,7 @@ public class SystemData {
     public static String errorInvalidEmail = "Invalid email format";
     public static String errorInvalidFirstName = "The value for field `firstName` is too short";
     public static String errorDeleteUser = "This is 404 error!";
+    public static String errorUserNotFound = "User not found";
     public static String answer = "Users with email \'" + DataForTest.existingEmail +"\' already exists";
     public static int successfulStatusCode = 200;
     public static int statusCode400 = 400;

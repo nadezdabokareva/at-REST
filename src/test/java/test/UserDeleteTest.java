@@ -24,8 +24,6 @@ public class UserDeleteTest {
                 responseCreateAuth.getCookie(authSid),
                 responseCreateAuth.jsonPath().getString("id"));
 
-        System.out.println(deleteUser.asString());
-
         assertTrue(deleteUser.asString().contains(errorDeleteUser));
         assertEquals(deleteUser.statusCode(), statusCode404);
     }
@@ -35,33 +33,27 @@ public class UserDeleteTest {
     @DisplayName("Delete new user")
     @Test
     public void deleteUserPositiveTest(){
-//создаем нового пользователя
+        //создаем нового пользователя
         Response responseCreateAuth = ApiCoreResults.createUserResponse();
-
         String id = responseCreateAuth.jsonPath().getString("id");
 
         //авторизация ранее созданного юзера
         Response authUserData = ApiCoreResults.authUserData();
-        String cookie = authUserData.getCookie("auth_sid");
-        String header = authUserData.getHeader("x-csrf-token");
 
 
-        Response responseGetElseUserData = ApiCoreResults.deleteUserCard(
-                header,
-                cookie,
+        Response deleteUser = ApiCoreResults.deleteUserCard(
+                authUserData.getHeader(csrfToken),
+                authUserData.getCookie(authSid),
                 id);
 
+        //проверка, что пользователь удален
+        Response getDataByDeletedUser = ApiCoreResults.getUserCard(
+                authUserData.getHeader(csrfToken),
+                authUserData.getCookie(authSid),
+                id);
 
+        assertEquals(getDataByDeletedUser.asString(), errorUserNotFound);
+        assertEquals(getDataByDeletedUser.statusCode(), statusCode404);
 
-        Response deleteUser = ApiCoreResults.deleteUserCard( responseCreateAuth.getHeader("x-csrf-token"),
-                responseCreateAuth.getCookie("auth_sid"),
-                responseCreateAuth.jsonPath().getString("id"));
-
-
-
-        System.out.println(deleteUser.asString());
-
-        assertTrue(deleteUser.asString().contains(errorDeleteUser));
-        assertEquals(deleteUser.statusCode(), statusCode404);
     }
 }
