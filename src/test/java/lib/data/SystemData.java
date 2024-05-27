@@ -9,9 +9,11 @@ public class SystemData {
     public static String errorAuthToken = "Auth token not supplied";
     public static String errorInvalidEmail = "Invalid email format";
     public static String errorInvalidFirstName = "The value for field `firstName` is too short";
+    public static String errorDeleteUser = "This is 404 error!";
     public static String answer = "Users with email \'" + DataForTest.existingEmail +"\' already exists";
     public static int successfulStatusCode = 200;
-    public static int badStatusCode = 400;
+    public static int statusCode400 = 400;
+    public static int statusCode404 = 404;
     public static String usernameField = "username";
     public static String firstNameField = "firstName";
     public static String lastNameField = "lastName";

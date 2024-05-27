@@ -35,7 +35,7 @@ public class UserRegistrationTest extends BaseTestCase {
                 .andReturn();
 
         Assertions.assertResponseTextEquals(responseCreateAuth, SystemData.answer);
-        Assertions.assertResponseCodeEquals(responseCreateAuth, SystemData.badStatusCode);
+        Assertions.assertResponseCodeEquals(responseCreateAuth, SystemData.statusCode400);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class UserRegistrationTest extends BaseTestCase {
         );
 
         System.out.println(responseCreateAuth.asString());
-        assertEquals(responseCreateAuth.statusCode(), badStatusCode);
+        assertEquals(responseCreateAuth.statusCode(), statusCode400);
         assertTrue(responseCreateAuth.asString().contains(requiredParamMissingMessage));
     }
 
@@ -97,7 +97,7 @@ public class UserRegistrationTest extends BaseTestCase {
         Response responseCreateAuth = ApiCoreResults.createUserWithCustomUserName(tooLongUsername);
 
         assertEquals(responseCreateAuth.asString(), failMessageTooLongName);
-        assertEquals(responseCreateAuth.statusCode(), badStatusCode);
+        assertEquals(responseCreateAuth.statusCode(), statusCode400);
 
     }
 
@@ -108,7 +108,7 @@ public class UserRegistrationTest extends BaseTestCase {
         Response responseCreateAuth = ApiCoreResults.createUserWithCustomUserName(shortUsername);
 
         assertEquals(responseCreateAuth.asString(), failMessageShortName);
-        assertEquals(responseCreateAuth.statusCode(), badStatusCode);
+        assertEquals(responseCreateAuth.statusCode(), statusCode400);
 
     }
 

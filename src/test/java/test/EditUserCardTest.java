@@ -97,7 +97,7 @@ public class EditUserCardTest {
         Response responseEditUser = ApiCoreResults.editUserWithoutHeadersResponse(id, editData);
 
         assertEquals(responseEditUser.jsonPath().get("error"), errorAuthToken);
-        assertEquals(responseEditUser.statusCode(), badStatusCode);
+        assertEquals(responseEditUser.statusCode(), statusCode400);
     }
 
     @DisplayName("Change user data with authorization by else user")
@@ -126,7 +126,7 @@ public class EditUserCardTest {
                 cookie);
 
         assertEquals(responseEditUser.jsonPath().get("error"), errorUserCanEditOnlyOwnData);
-        assertEquals(responseEditUser.statusCode(), badStatusCode);
+        assertEquals(responseEditUser.statusCode(), statusCode400);
 
     }
 
@@ -157,7 +157,7 @@ public class EditUserCardTest {
                 cookie);
 
         assertEquals(responseEditUser.jsonPath().get("error"), errorInvalidEmail);
-        assertEquals(responseEditUser.statusCode(), badStatusCode);
+        assertEquals(responseEditUser.statusCode(), statusCode400);
     }
 
     @DisplayName("Change user data with short firstname")
@@ -187,7 +187,7 @@ public class EditUserCardTest {
                 cookie);
 
         assertEquals(responseEditUser.jsonPath().get("error"), errorInvalidFirstName);
-        assertEquals(responseEditUser.statusCode(), badStatusCode);
+        assertEquals(responseEditUser.statusCode(), statusCode400);
     }
 
 }

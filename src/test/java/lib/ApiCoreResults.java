@@ -80,6 +80,21 @@ public class ApiCoreResults {
         return responseUserDataAfterEdit;
     }
 
+    @Step("Delete user data")
+    public static Response deleteUserCard(String header,
+                                       String cookie,
+                                       String id) {
+
+        Response responseAfterDeleteUser = RestAssured
+                .given()
+                .header("x-csrf-token", header)
+                .cookie("auth_sid", cookie)
+                .delete(baseUrl + userCard(id))
+                .andReturn();
+
+        return responseAfterDeleteUser;
+    }
+
     @Step("Create user with custom email")
     public static Response createUserWithCustomEmail(String email) {
         Response responseCreateAuth = RestAssured
@@ -133,6 +148,22 @@ public class ApiCoreResults {
     public static Response authorizationWithJustCreatedUser() {
         Map<String, String> authData = new HashMap<>();
         authData.put(SystemData.emailField, email);
+        authData.put(SystemData.passwordField, password);
+
+        Response responseGetAuth = RestAssured
+                .given()
+                .body(authData)
+                .post(baseUrl + userLogin)
+                .andReturn();
+
+
+        return responseGetAuth;
+    }
+
+    @Step("Authorization with existing user")
+    public static Response authorizationWithExistingUser() {
+        Map<String, String> authData = new HashMap<>();
+        authData.put(SystemData.emailField, existingEmail);
         authData.put(SystemData.passwordField, password);
 
         Response responseGetAuth = RestAssured
