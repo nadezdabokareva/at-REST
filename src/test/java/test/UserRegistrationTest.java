@@ -1,6 +1,8 @@
 package test;
 
 import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Owner;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.*;
@@ -19,6 +21,8 @@ import static lib.data.SystemData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Owner("Надежда Юрьева")
+@Epic("User registration")
 public class UserRegistrationTest extends BaseTestCase {
 
     @Test

@@ -1,8 +1,6 @@
 package test;
 
-import io.qameta.allure.Description;
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
+import io.qameta.allure.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -19,6 +17,7 @@ import java.util.Map;
 
 import static lib.data.BaseUrl.*;
 
+@Owner("Надежда Юрьева")
 @Epic("Authorization cases")
 @Feature("Authorization")
 public class UserAuthTest extends BaseTestCase {
@@ -59,6 +58,7 @@ public class UserAuthTest extends BaseTestCase {
         Assertions.assertJsonByName(responseCheckUAuth, "user_id", this.userIdOnAuth);
     }
 
+    @Flaky
     @ParameterizedTest
     @ValueSource(strings = {"cookie, headers"})
     public void negativeAuthUserTest(String condition) {

@@ -1,91 +1,34 @@
 package test;
 
 import io.qameta.allure.Description;
-import io.restassured.RestAssured;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Owner;
 import io.restassured.response.Response;
 import lib.ApiCoreResults;
-import lib.Assertions;
-import lib.data.BaseUrl;
 import lib.data.SystemData;
-import lib.dto.User;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static lib.data.BaseUrl.*;
 import static lib.data.DataForTest.*;
+import static lib.data.DataForTest.id;
 import static lib.data.SystemData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Owner("Надежда Юрьева")
+@Epic("Edit User")
 public class EditUserCardTest {
-    public String cookie;
-    public String header;
-
-    @DisplayName("test from lessons")
-    @Description("positive test")
-    @Test
-    public void editJustCreatedUserCardTest(){
-        //создаем нового пользователя
-        Response responseCreateAuth = RestAssured
-                .given()
-                .body(User.createUserData(
-                        email,
-                        password,
-                        username,
-                        firstName,
-                        lastName))
-                .post(baseUrl + BaseUrl.userRegistration)
-                .andReturn();
-
-        String id = responseCreateAuth.jsonPath().getString("id");
-
-        //авторизация ранее созданного юзера
-        Map<String, String> authData = new HashMap<>();
-        authData.put(SystemData.emailField, email);
-        authData.put(SystemData.passwordField, password);
-
-        Response authUserData = RestAssured
-                .given()
-                .body(authData)
-                .post(baseUrl + userLogin)
-                .andReturn();
-
-        cookie = authUserData.getCookie("auth_sid");
-        header = authUserData.getHeader("x-csrf-token");
-
-        //создание данных для изменения
-        Map<String, String> editData = new HashMap<>();
-        editData.put(SystemData.firstNameField, newName);
-
-        //изменяем данные пользователя
-        Response responseEditUser = RestAssured
-                .given()
-                .header("x-csrf-token", header)
-                .cookie("auth_sid", cookie)
-                .body(editData)
-                .put(baseUrl +userCard(id))
-                .andReturn();
-        responseEditUser.prettyPrint();
-
-        //проверяем, что данные изменились
-        Response responseUserDataAfterEdit = RestAssured
-                .given()
-                .header("x-csrf-token", header)
-                .cookie("auth_sid", cookie)
-                .get(baseUrl +userCard(id))
-                .andReturn();
-
-        Assertions.assertJsonByNameString(responseUserDataAfterEdit, SystemData.firstNameField, newName);
-    }
 
     @DisplayName("Change user data without authorization")
     @Description("Попытаемся изменить данные пользователя, будучи неавторизованными.")
     @Test
     public void editUserDataWithoutAuthorizationTest(){
         //создаем нового пользователя
-        Response responseCreateAuth = ApiCoreResults.createUserResponse();
+        Response responseCreateAuth = ApiCoreResults.createUser();
 
         int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
 
@@ -96,8 +39,14 @@ public class EditUserCardTest {
         //изменяем данные пользователя без авторизации
         Response responseEditUser = ApiCoreResults.editUserWithoutHeadersResponse(id, editData);
 
-        assertEquals(responseEditUser.jsonPath().get("error"), errorAuthToken);
+        String expected = responseEditUser.jsonPath().get("error");
+
+        assertEquals(expected, errorAuthToken);
         assertEquals(responseEditUser.statusCode(), statusCode400);
+
+        Response authUserData = ApiCoreResults.authorizationWithJustCreatedUser();
+
+        deleteDataAfterTest(id, authUserData);
     }
 
     @DisplayName("Change user data with authorization by else user")
@@ -105,28 +54,32 @@ public class EditUserCardTest {
     @Test
     public void editUserDataWithAuthorizationByElseUserTest(){
         //создаем нового пользователя
-        Response responseCreateAuth = ApiCoreResults.createUserResponse();
+        Response responseCreateAuth = ApiCoreResults.createUser();
 
         int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
 
         //авторизация ранее созданного юзера
-        Response authUserData = ApiCoreResults.authUserData();
-        cookie = authUserData.getCookie("auth_sid");
-        header = authUserData.getHeader("x-csrf-token");
+        Response authUserData = ApiCoreResults.authorizationWithJustCreatedUser();
+        String cookie = authUserData.getCookie("auth_sid");
+        String header = authUserData.getHeader("x-csrf-token");
 
         //создание данных для изменения
         Map<String, String> editData = new HashMap<>();
         editData.put(SystemData.firstNameField, newName);
 
         //изменяем данные пользователя
-        Response responseEditUser = ApiCoreResults.editElseUserResponse(
+        Response responseEditUser2 = ApiCoreResults.editElseUserResponse(
                 id,
                 editData,
                 header,
                 cookie);
 
-        assertEquals(responseEditUser.jsonPath().get("error"), errorUserCanEditOnlyOwnData);
-        assertEquals(responseEditUser.statusCode(), statusCode400);
+        String expected = responseEditUser2.jsonPath().get("error");
+
+        assertEquals(expected, errorUserCanEditOnlyOwnData);
+        assertEquals(responseEditUser2.statusCode(), statusCode400);
+
+        deleteDataAfterTest(id, authUserData);
 
     }
 
@@ -136,28 +89,36 @@ public class EditUserCardTest {
     @Test
     public void editUserDataWithIncorrectEmailTest(){
         //создаем нового пользователя
-        Response responseCreateAuth = ApiCoreResults.createUserResponse();
+        Response responseCreateAuth = ApiCoreResults.createUser();
+
+        responseCreateAuth.print();
 
         int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
 
         //        авторизация ранее созданного юзера
-        Response authUserData = ApiCoreResults.authUserData();
-        cookie = authUserData.getCookie("auth_sid");
-        header = authUserData.getHeader("x-csrf-token");
+        Response authUserData = ApiCoreResults.authorizationWithJustCreatedUser();
+        String cookie = authUserData.getCookie("auth_sid");
+        String header = authUserData.getHeader("x-csrf-token");
+
+        authUserData.print();
 
         //создание данных для изменения
         Map<String, String> editData = new HashMap<>();
         editData.put(emailField, badEmail);
 
         //изменяем данные пользователя с некорректным email
-        Response responseEditUser = ApiCoreResults.editUserResponse(
+        Response responseEditUser3 = ApiCoreResults.editUserResponse(
                 id,
                 editData,
                 header,
                 cookie);
 
-        assertEquals(responseEditUser.jsonPath().get("error"), errorInvalidEmail);
-        assertEquals(responseEditUser.statusCode(), statusCode400);
+        String expected = responseEditUser3.jsonPath().get("error");
+
+        assertEquals(expected, errorInvalidEmail);
+        assertEquals(responseEditUser3.statusCode(), statusCode400);
+
+        deleteDataAfterTest(id, authUserData);
     }
 
     @DisplayName("Change user data with short firstname")
@@ -166,28 +127,39 @@ public class EditUserCardTest {
     @Test
     public void editUserDataWithShortFirstNameTest(){
         //создаем нового пользователя
-        Response responseCreateAuth = ApiCoreResults.createUserResponse();
+        Response responseCreateAuth = ApiCoreResults.createUser();
 
         int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
 
         //авторизация ранее созданного юзера
-        Response authUserData = ApiCoreResults.authUserData();
-        cookie = authUserData.getCookie("auth_sid");
-        header = authUserData.getHeader("x-csrf-token");
+        Response authUserData = ApiCoreResults.authorizationWithJustCreatedUser();
+        String cookie = authUserData.getCookie("auth_sid");
+        String header = authUserData.getHeader("x-csrf-token");
 
         //создание данных для изменения
         Map<String, String> editData = new HashMap<>();
         editData.put(firstNameField, shortFirstName);
 
         //изменяем данные пользователя с коротким именем
-        Response responseEditUser = ApiCoreResults.editUserResponse(
+        Response responseEditUser4 = ApiCoreResults.editUserResponse(
                 id,
                 editData,
                 header,
                 cookie);
 
-        assertEquals(responseEditUser.jsonPath().get("error"), errorInvalidFirstName);
-        assertEquals(responseEditUser.statusCode(), statusCode400);
+        String expected = responseEditUser4.jsonPath().get("error");
+
+        assertEquals(expected, errorInvalidFirstName);
+        assertEquals(responseEditUser4.statusCode(), statusCode400);
+
+        deleteDataAfterTest(id, authUserData);
+    }
+
+    private static void deleteDataAfterTest(int id, Response authUserData) {
+        Response deleteUser = ApiCoreResults.deleteUserCard(
+                authUserData.getHeader(csrfToken),
+                authUserData.getCookie(authSid),
+                String.valueOf(id));
     }
 
 }

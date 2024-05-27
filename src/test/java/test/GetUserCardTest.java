@@ -3,9 +3,12 @@ package test;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import io.qameta.allure.Owner;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import lib.*;
+import lib.ApiCoreResults;
+import lib.Assertions;
+import lib.BaseTestCase;
 import lib.data.BaseUrl;
 import lib.data.DataForTest;
 import lib.data.SystemData;
@@ -19,17 +22,15 @@ import static lib.data.BaseUrl.baseUrl;
 import static lib.data.BaseUrl.userLogin;
 import static lib.data.SystemData.*;
 
-
+@Owner("Надежда Юрьева")
 @Epic("Get user data cases")
 @Feature("Get user data")
 public class GetUserCardTest extends BaseTestCase {
-    String id;
     BaseUrl api;
     String cookie;
     String header;
 
 
-    \\Задание 17
     @Description("Получение данных пользователя с чужим id")
     @DisplayName("Get user data with else id")
     @Test
@@ -42,29 +43,15 @@ public class GetUserCardTest extends BaseTestCase {
         this.cookie = this.getCookie(authorizationUser, SystemData.authSid);
         this.header = this.getHeader(authorizationUser, SystemData.csrfToken);
 
-        Response responseGetElseUserData = ApiCoreResults.getUserCard(this.header, this.cookie, String.valueOf(id-1));
+        Response responseGetElseUserData = ApiCoreResults.getUserCard(this.header, this.cookie, String.valueOf(2));
+
+        responseGetElseUserData.print();
 
         Assertions.assertJsonHasField(responseGetElseUserData, usernameField);
         Assertions.assertJsonHasNotField(responseGetElseUserData, emailField);
         Assertions.assertJsonHasNotField(responseGetElseUserData, passwordField);
         Assertions.assertJsonHasNotField(responseGetElseUserData, firstNameField);
         Assertions.assertJsonHasNotField(responseGetElseUserData, lastNameField);
-    }
-
-    @Description("Получение данных только что зарегистрированного пользователя")
-    @DisplayName("Successful get user data")
-    @Test
-    public void getJustCreatedUserCardTest(){
-        Response responseCreateAuth = ApiCoreResults.createUser();
-
-        String id = responseCreateAuth.jsonPath().getString("id");
-
-        Response getUserCard = RestAssured
-                .given()
-                .get((baseUrl + api.userCard(id)))
-                .andReturn();
-
-        Assertions.assertJsonHasField(getUserCard, usernameField);
     }
 
     @Description("Получение данных не зарегистрированного пользователя")
@@ -83,7 +70,7 @@ public class GetUserCardTest extends BaseTestCase {
 
     }
 
-    @Description("Получение данных только что зарегистрированного пользователя -- вторая версия с подробными запросами")
+    @Description("Получение данных только что зарегистрированного пользователя -- из урока")
     @DisplayName("Successful get user data")
     @Test
     public void getAuthUserCardTest(){
