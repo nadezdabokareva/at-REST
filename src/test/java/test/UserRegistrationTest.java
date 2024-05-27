@@ -14,9 +14,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static lib.data.BaseUrl.baseUrl;
 import static lib.data.BaseUrl.userRegistration;
-import static lib.data.DataForTest.badEmail;
+import static lib.data.DataForTest.*;
 import static lib.data.SystemData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserRegistrationTest extends BaseTestCase {
 
@@ -55,29 +56,60 @@ public class UserRegistrationTest extends BaseTestCase {
         Assertions.assertJsonHasField(responseCreateAuth, DataForTest.id);
     }
 
-    @Description("Unsuccessful creating user")
+    @Description("Unsuccessful creating user with incorrect email")
     @DisplayName("Test using email without @ symbol")
     @Test
     public void createUserWithIncorrectEmailTest() {
         Response responseCreateAuth = ApiCoreResults.createUserWithCustomEmail(badEmail);
-        responseCreateAuth.print();
 
-       assertEquals(responseCreateAuth.asString(), failMessage);
+        assertEquals(responseCreateAuth.asString(), failMessage);
 
     }
 
     @Description("Create user without required fields")
     @DisplayName("Test trying creating user without required fields")
     @ParameterizedTest
-    @CsvSource({" e,ail , password, username, firstName, lastName",
-    "email, , username, firstName, lastName"})
-    public void createUserWithCustomFieldsTest(String requestField) {
+    @CsvSource({"'', password, username, firstName, lastName",
+                "email, '', username, firstName, lastName",
+                "email, password, '', firstName, lastName",
+                "email, password, username, '', lastName",
+                "email, password, username, firstName, ''"})
+    public void createUserWithCustomFieldsTest(String emailField, String passwordField, String usernameField,
+                                               String firstNameField, String lastNameField) {
 
-        Response responseCreateAuth = ApiCoreResults.createUserWithCustomFields(requestField);
-        responseCreateAuth.print();
-        System.out.println(responseCreateAuth.statusCode());
+        Response responseCreateAuth = ApiCoreResults.createUserWithCustomFields(
+                emailField,
+                passwordField,
+                usernameField,
+                firstNameField,
+                lastNameField
+        );
 
+        System.out.println(responseCreateAuth.asString());
         assertEquals(responseCreateAuth.statusCode(), badStatusCode);
+        assertTrue(responseCreateAuth.asString().contains(requiredParamMissingMessage));
+    }
+
+    @Description("Unsuccessful creating user with too long name")
+    @DisplayName("Test using too long name")
+    @Test
+    public void createUserWithShortNameTest() {
+        Response responseCreateAuth = ApiCoreResults.createUserWithCustomUserName(tooLongUsername);
+
+        assertEquals(responseCreateAuth.asString(), failMessageTooLongName);
+        assertEquals(responseCreateAuth.statusCode(), badStatusCode);
+
+    }
+
+    @Description("Unsuccessful creating user with too short name")
+    @DisplayName("Test using short name")
+    @Test
+    public void createUserWithLongNameTest() {
+        Response responseCreateAuth = ApiCoreResults.createUserWithCustomUserName(shortUsername);
+
+        assertEquals(responseCreateAuth.asString(), failMessageShortName);
+        assertEquals(responseCreateAuth.statusCode(), badStatusCode);
+
     }
 
 }

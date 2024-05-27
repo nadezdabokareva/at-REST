@@ -92,15 +92,16 @@ public class ApiCoreResults {
         return responseCreateAuth;
     }
     @Step("Create user with custom fields")
-    public static Response createUserWithCustomFields(String requestField) {
+    public static Response createUserWithCustomFields(String emailField, String passwordField, String usernameField,
+                                                      String firstNameField, String lastNameField) {
         Response responseCreateAuth = RestAssured
                 .given()
                 .body(User.createUserWithCustomFields(
-                        requestField,
-                        requestField,
-                        requestField,
-                        requestField,
-                        requestField))
+                        emailField,
+                        passwordField,
+                        usernameField,
+                        firstNameField,
+                        lastNameField))
                 .post(baseUrl + BaseUrl.userRegistration)
                 .andReturn();
 
