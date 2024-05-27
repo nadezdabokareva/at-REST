@@ -81,7 +81,7 @@ public class EditUserCardTest {
     }
 
     @DisplayName("Change user data without authorization")
-    @Description("Попытаемся изменить данные пользователя, будучи неавторизованными")
+    @Description("Попытаемся изменить данные пользователя, будучи неавторизованными.")
     @Test
     public void editUserDataWithoutAuthorizationTest(){
         //создаем нового пользователя
@@ -101,7 +101,7 @@ public class EditUserCardTest {
     }
 
     @DisplayName("Change user data with authorization by else user")
-    @Description("Попытаемся изменить данные пользователя, будучи авторизованными другим пользователем")
+    @Description("Попытаемся изменить данные пользователя, будучи авторизованными другим пользователем.")
     @Test
     public void editUserDataWithAuthorizationByElseUserTest(){
         //создаем нового пользователя
@@ -109,7 +109,7 @@ public class EditUserCardTest {
 
         int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
 
-//        авторизация ранее созданного юзера
+        //авторизация ранее созданного юзера
         Response authUserData = ApiCoreResults.authUserData();
         cookie = authUserData.getCookie("auth_sid");
         header = authUserData.getHeader("x-csrf-token");
@@ -132,7 +132,7 @@ public class EditUserCardTest {
 
     @DisplayName("Change user data with incorrect email")
     @Description("Попытаемся изменить email пользователя, будучи авторизованными " +
-            "тем же пользователем, на новый email без символа @ ")
+            "тем же пользователем, на новый email без символа @.")
     @Test
     public void editUserDataWithIncorrectEmailTest(){
         //создаем нового пользователя
@@ -162,7 +162,7 @@ public class EditUserCardTest {
 
     @DisplayName("Change user data with short firstname")
     @Description("Попытаемся изменить firstName пользователя, будучи авторизованными " +
-            "тем же пользователем, на очень короткое значение в один символ")
+            "тем же пользователем, на очень короткое значение в один символ.")
     @Test
     public void editUserDataWithShortFirstNameTest(){
         //создаем нового пользователя
