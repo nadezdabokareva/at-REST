@@ -1,10 +1,13 @@
 package test;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.*;
 import lib.data.BaseUrl;
 import lib.data.DataForTest;
+import lib.data.SystemData;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -12,8 +15,10 @@ import java.util.Map;
 
 import static lib.data.BaseUrl.baseUrl;
 import static lib.data.BaseUrl.userLogin;
-import static lib.data.DataForTest.*;
 
+
+@Epic("Get user data cases")
+@Feature("Get user data")
 public class GetUserCardTest extends BaseTestCase {
     String id;
     BaseUrl api;
@@ -31,7 +36,7 @@ public class GetUserCardTest extends BaseTestCase {
                 .get((baseUrl + api.userCard(id)))
                 .andReturn();
 
-        Assertions.assertJsonHasField(getUserCard, usernameField);
+        Assertions.assertJsonHasField(getUserCard, SystemData.usernameField);
     }
 
     @Test
@@ -41,18 +46,18 @@ public class GetUserCardTest extends BaseTestCase {
                 .get((baseUrl + api.userCard(DataForTest.testId)))
                 .andReturn();
 
-        Assertions.assertJsonHasField(getUserCard, usernameField);
-        Assertions.assertJsonHasNotField(getUserCard, firstNameField);
-        Assertions.assertJsonHasNotField(getUserCard, lastNameField);
-        Assertions.assertJsonHasNotField(getUserCard, DataForTest.emailField);
+        Assertions.assertJsonHasField(getUserCard, SystemData.usernameField);
+        Assertions.assertJsonHasNotField(getUserCard, SystemData.firstNameField);
+        Assertions.assertJsonHasNotField(getUserCard, SystemData.lastNameField);
+        Assertions.assertJsonHasNotField(getUserCard, SystemData.emailField);
 
     }
 
     @Test
     public void getAuthUserCardTest(){
         Map<String, String> authData = new HashMap<>();
-        authData.put(DataForTest.emailField, DataForTest.existingEmail);
-        authData.put(DataForTest.passwordField, DataForTest.password);
+        authData.put(SystemData.emailField, DataForTest.existingEmail);
+        authData.put(SystemData.passwordField, DataForTest.password);
 
         Response responseGetAuth = RestAssured
                 .given()
@@ -60,13 +65,13 @@ public class GetUserCardTest extends BaseTestCase {
                 .post(baseUrl + userLogin)
                 .andReturn();
 
-        this.cookie = this.getCookie(responseGetAuth, authSid);
-        this.header = this.getHeader(responseGetAuth, csrfToken);
+        this.cookie = this.getCookie(responseGetAuth, SystemData.authSid);
+        this.header = this.getHeader(responseGetAuth, SystemData.csrfToken);
 
         Response getUserCard = RestAssured
                 .given()
-                .header(csrfToken, header)
-                .cookie(authSid, cookie)
+                .header(SystemData.csrfToken, header)
+                .cookie(SystemData.authSid, cookie)
                 .get((baseUrl + api.userCard(DataForTest.testId)))
                 .andReturn();
 
@@ -76,5 +81,7 @@ public class GetUserCardTest extends BaseTestCase {
 
         Assertions.assertJsonHasFields(getUserCard, expectedFieldsForCard);
     }
+
+
 
 }

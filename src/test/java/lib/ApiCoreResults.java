@@ -76,4 +76,20 @@ public class ApiCoreResults {
         return responseUserDataAfterEdit;
     }
 
+    @Step("Create user with custom email")
+    public static Response createUserWithCustomEmail(String email) {
+        Response responseCreateAuth = RestAssured
+                .given()
+                .body(User.createUserData(
+                        email,
+                        password,
+                        username,
+                        firstName,
+                        lastName))
+                .post(baseUrl + BaseUrl.userRegistration)
+                .andReturn();
+
+        return responseCreateAuth;
+    }
+
 }

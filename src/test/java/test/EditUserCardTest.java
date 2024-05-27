@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.Assertions;
 import lib.data.BaseUrl;
+import lib.data.SystemData;
 import lib.dto.User;
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +37,8 @@ public class EditUserCardTest {
 
         //авторизация ранее созданного юзера
         Map<String, String> authData = new HashMap<>();
-        authData.put(emailField, email);
-        authData.put(passwordField, password);
+        authData.put(SystemData.emailField, email);
+        authData.put(SystemData.passwordField, password);
 
         Response authUserData = RestAssured
                 .given()
@@ -50,7 +51,7 @@ public class EditUserCardTest {
 
         //создание данных для изменения
         Map<String, String> editData = new HashMap<>();
-        editData.put(firstNameField, newName);
+        editData.put(SystemData.firstNameField, newName);
 
         //изменяем данные пользователя
         Response responseEditUser = RestAssured
@@ -70,6 +71,6 @@ public class EditUserCardTest {
                 .get(baseUrl +userCard(id))
                 .andReturn();
 
-        Assertions.assertJsonByNameString(responseUserDataAfterEdit, firstNameField, newName);
+        Assertions.assertJsonByNameString(responseUserDataAfterEdit, SystemData.firstNameField, newName);
     }
 }
