@@ -91,5 +91,35 @@ public class ApiCoreResults {
 
         return responseCreateAuth;
     }
+    @Step("Create user with custom fields")
+    public static Response createUserWithCustomFields(String requestField) {
+        Response responseCreateAuth = RestAssured
+                .given()
+                .body(User.createUserWithCustomFields(
+                        requestField,
+                        requestField,
+                        requestField,
+                        requestField,
+                        requestField))
+                .post(baseUrl + BaseUrl.userRegistration)
+                .andReturn();
+
+        return responseCreateAuth;
+    }
+    @Step("Create user with custom username")
+    public static Response createUserWithCustomUserName(String username) {
+        Response responseCreateAuth = RestAssured
+                .given()
+                .body(User.createUserData(
+                        email,
+                        password,
+                        username,
+                        firstName,
+                        lastName))
+                .post(baseUrl + BaseUrl.userRegistration)
+                .andReturn();
+
+        return responseCreateAuth;
+    }
 
 }

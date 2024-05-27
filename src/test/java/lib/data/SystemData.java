@@ -2,6 +2,7 @@ package lib.data;
 
 public class SystemData {
     public static String failMessage = "Invalid email format";
+    public static String requiredParamMissingMessage = "The following required params are missed: password, username, firstName, lastName";
     public static String answer = "Users with email \'" + DataForTest.existingEmail +"\' already exists";
     public static int successfulStatusCode = 200;
     public static int badStatusCode = 400;

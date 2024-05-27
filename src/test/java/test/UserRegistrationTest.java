@@ -9,11 +9,13 @@ import lib.data.SystemData;
 import lib.dto.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static lib.data.BaseUrl.baseUrl;
 import static lib.data.BaseUrl.userRegistration;
 import static lib.data.DataForTest.badEmail;
-import static lib.data.SystemData.failMessage;
+import static lib.data.SystemData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserRegistrationTest extends BaseTestCase {
@@ -62,6 +64,20 @@ public class UserRegistrationTest extends BaseTestCase {
 
        assertEquals(responseCreateAuth.asString(), failMessage);
 
+    }
+
+    @Description("Create user without required fields")
+    @DisplayName("Test trying creating user without required fields")
+    @ParameterizedTest
+    @CsvSource({" e,ail , password, username, firstName, lastName",
+    "email, , username, firstName, lastName"})
+    public void createUserWithCustomFieldsTest(String requestField) {
+
+        Response responseCreateAuth = ApiCoreResults.createUserWithCustomFields(requestField);
+        responseCreateAuth.print();
+        System.out.println(responseCreateAuth.statusCode());
+
+        assertEquals(responseCreateAuth.statusCode(), badStatusCode);
     }
 
 }

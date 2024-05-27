@@ -1,5 +1,7 @@
 package lib.dto;
 
+import lib.data.DataGenerator;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +68,17 @@ public class User {
         userData.put("username", username);
         userData.put("firstName", firstName);
         userData.put("lastName", lastName);
+        return userData;
+    }
+
+    public static Map<String, String> createUserWithCustomFields(String emailField, String passwordField, String usernameField,
+                                                                 String firstNameField, String lastNameField) {
+        Map<String, String> userData = new HashMap<>();
+        userData.put(emailField, DataGenerator.emailGenerator());
+        userData.put(passwordField, "1234");
+        userData.put(usernameField, "learnQA");
+        userData.put(firstNameField, "learnQA");
+        userData.put(lastNameField, "learnQA");
         return userData;
     }
 
