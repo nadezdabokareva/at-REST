@@ -13,6 +13,7 @@ import java.util.Map;
 
 import static lib.data.BaseUrl.*;
 import static lib.data.DataForTest.*;
+import static lib.data.DataForTest.email;
 import static lib.data.DataGenerator.emailGenerator;
 
 public class ApiCoreResults {
@@ -31,7 +32,7 @@ public class ApiCoreResults {
                         lastName))
                 .post(baseUrl + BaseUrl.userRegistration)
                 .andReturn();
-        
+
         return responseCreateAuth;
     }
 
@@ -51,14 +52,14 @@ public class ApiCoreResults {
     @Step("Authorization user response")
     public static Response editUser(String header,
                                     String cookie,
-                                    Map<String, String> editData){
+                                    Map<String, String> editData) {
 
         Response responseEditUser = RestAssured
                 .given()
                 .header("x-csrf-token", header)
                 .cookie("auth_sid", cookie)
                 .body(editData)
-                .put(baseUrl +userCard(id))
+                .put(baseUrl + userCard(id))
                 .andReturn();
 
         return responseEditUser;
@@ -66,14 +67,14 @@ public class ApiCoreResults {
 
     @Step("Get user data")
     public static Response getUserCard(String header,
-                                    String cookie,
-                                    String id){
+                                       String cookie,
+                                       String id) {
 
         Response responseUserDataAfterEdit = RestAssured
                 .given()
                 .header("x-csrf-token", header)
                 .cookie("auth_sid", cookie)
-                .get(baseUrl +userCard(id))
+                .get(baseUrl + userCard(id))
                 .andReturn();
 
         return responseUserDataAfterEdit;
@@ -94,6 +95,7 @@ public class ApiCoreResults {
 
         return responseCreateAuth;
     }
+
     @Step("Create user with custom fields")
     public static Response createUserWithCustomFields(String emailField, String passwordField, String usernameField,
                                                       String firstNameField, String lastNameField) {
@@ -110,6 +112,7 @@ public class ApiCoreResults {
 
         return responseCreateAuth;
     }
+
     @Step("Create user with custom username")
     public static Response createUserWithCustomUserName(String username) {
         Response responseCreateAuth = RestAssured
@@ -129,7 +132,7 @@ public class ApiCoreResults {
     @Step("Authorization with just created user")
     public static Response authorizationWithJustCreatedUser() {
         Map<String, String> authData = new HashMap<>();
-        authData.put(SystemData.emailField, existingEmail);
+        authData.put(SystemData.emailField, email);
         authData.put(SystemData.passwordField, password);
 
         Response responseGetAuth = RestAssured
@@ -141,4 +144,70 @@ public class ApiCoreResults {
 
         return responseGetAuth;
     }
+
+
+    @Step("Creation user")
+    public static Response createUserResponse() {
+        Response responseCreateAuth = RestAssured
+                .given()
+                .body(User.createUserData(
+                        DataForTest.email,
+                        password,
+                        username,
+                        firstName,
+                        lastName))
+                .post(baseUrl + BaseUrl.userRegistration)
+                .andReturn();
+        return responseCreateAuth;
+    }
+
+
+    @Step("Authorization user")
+    public static Response authUserData() {
+        Map<String, String> authData = new HashMap<>();
+        authData.put(SystemData.emailField, DataForTest.email);
+        authData.put(SystemData.passwordField, password);
+
+        Response authUserData = RestAssured
+                .given()
+                .body(authData)
+                .post(baseUrl + userLogin)
+                .andReturn();
+        return authUserData;
+    }
+
+    @Step("Edit user data")
+    public static Response editUserResponse(int id, Map<String, String> editData, String header, String cookie) {
+        Response responseEditUser = RestAssured
+                .given()
+                .header("x-csrf-token", header)
+                .cookie("auth_sid", cookie)
+                .body(editData)
+                .put(baseUrl + userCard(String.valueOf(id - 1)))
+                .andReturn();
+        return responseEditUser;
+    }
+
+    @Step("Edit else user data")
+    public static Response editElseUserResponse(int id, Map<String, String> editData, String header, String cookie) {
+        Response responseEditUser = RestAssured
+                .given()
+                .header("x-csrf-token", header)
+                .cookie("auth_sid", cookie)
+                .body(editData)
+                .put(baseUrl + userCard(String.valueOf(id - 1)))
+                .andReturn();
+        return responseEditUser;
+    }
+
+    @Step("Edit user data without headers")
+    public static Response editUserWithoutHeadersResponse(int id, Map<String, String> editData) {
+        Response responseEditUser = RestAssured
+                .given()
+                .body(editData)
+                .put(baseUrl + userCard(String.valueOf(id - 1)))
+                .andReturn();
+        return responseEditUser;
+    }
+
 }
