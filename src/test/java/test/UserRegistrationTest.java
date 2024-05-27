@@ -1,11 +1,13 @@
 package test;
 
+import io.qameta.allure.Description;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.*;
 import lib.data.DataForTest;
 import lib.data.SystemData;
 import lib.dto.User;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static lib.data.BaseUrl.baseUrl;
@@ -51,20 +53,11 @@ public class UserRegistrationTest extends BaseTestCase {
         Assertions.assertJsonHasField(responseCreateAuth, DataForTest.id);
     }
 
+    @Description("Unsuccessful creating user")
+    @DisplayName("Test using email without @ symbol")
     @Test
     public void createUserWithIncorrectEmailTest() {
-        Response responseCreateAuth = RestAssured
-                .given()
-                .body(User.createUserData(
-                        "ghjkl",
-                        DataForTest.password,
-                        DataForTest.username,
-                        DataForTest.firstName,
-                        DataForTest.lastName))
-                .post(baseUrl + userRegistration)
-                .andReturn();
-
-        Response responseCreateAuth2 = ApiCoreResults.createUserWithCustomEmail(badEmail);
+        Response responseCreateAuth = ApiCoreResults.createUserWithCustomEmail(badEmail);
         responseCreateAuth.print();
 
        assertEquals(responseCreateAuth.asString(), failMessage);
