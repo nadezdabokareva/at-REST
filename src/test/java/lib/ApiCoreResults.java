@@ -64,7 +64,7 @@ public class ApiCoreResults {
         return responseEditUser;
     }
 
-    @Step("Authorization user response")
+    @Step("Get user data")
     public static Response getUserCard(String header,
                                     String cookie,
                                     String id){

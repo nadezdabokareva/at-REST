@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static lib.data.BaseUrl.baseUrl;
 import static lib.data.BaseUrl.userLogin;
+import static lib.data.SystemData.*;
 
 
 @Epic("Get user data cases")
@@ -40,7 +41,7 @@ public class GetUserCardTest extends BaseTestCase {
                 .get((baseUrl + api.userCard(id)))
                 .andReturn();
 
-        Assertions.assertJsonHasField(getUserCard, SystemData.usernameField);
+        Assertions.assertJsonHasField(getUserCard, usernameField);
     }
 
     @Description("Получение данных не зарегистрированного пользователя")
@@ -52,7 +53,7 @@ public class GetUserCardTest extends BaseTestCase {
                 .get((baseUrl + api.userCard(DataForTest.testId)))
                 .andReturn();
 
-        Assertions.assertJsonHasField(getUserCard, SystemData.usernameField);
+        Assertions.assertJsonHasField(getUserCard, usernameField);
         Assertions.assertJsonHasNotField(getUserCard, SystemData.firstNameField);
         Assertions.assertJsonHasNotField(getUserCard, SystemData.lastNameField);
         Assertions.assertJsonHasNotField(getUserCard, SystemData.emailField);
@@ -104,7 +105,11 @@ public class GetUserCardTest extends BaseTestCase {
 
         Response responseGetElseUserData = ApiCoreResults.getUserCard(this.header, this.cookie, String.valueOf(id-1));
 
-        responseGetElseUserData.print();
+        Assertions.assertJsonHasField(responseGetElseUserData, usernameField);
+        Assertions.assertJsonHasNotField(responseGetElseUserData, emailField);
+        Assertions.assertJsonHasNotField(responseGetElseUserData, passwordField);
+        Assertions.assertJsonHasNotField(responseGetElseUserData, firstNameField);
+        Assertions.assertJsonHasNotField(responseGetElseUserData, lastNameField);
     }
 
 
