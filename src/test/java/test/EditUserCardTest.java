@@ -160,4 +160,34 @@ public class EditUserCardTest {
         assertEquals(responseEditUser.statusCode(), badStatusCode);
     }
 
+    @DisplayName("Change user data with short firstname")
+    @Description("Попытаемся изменить firstName пользователя, будучи авторизованными " +
+            "тем же пользователем, на очень короткое значение в один символ")
+    @Test
+    public void editUserDataWithShortFirstNameTest(){
+        //создаем нового пользователя
+        Response responseCreateAuth = ApiCoreResults.createUserResponse();
+
+        int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
+
+        //авторизация ранее созданного юзера
+        Response authUserData = ApiCoreResults.authUserData();
+        cookie = authUserData.getCookie("auth_sid");
+        header = authUserData.getHeader("x-csrf-token");
+
+        //создание данных для изменения
+        Map<String, String> editData = new HashMap<>();
+        editData.put(firstNameField, shortFirstName);
+
+        //изменяем данные пользователя с коротким именем
+        Response responseEditUser = ApiCoreResults.editUserResponse(
+                id,
+                editData,
+                header,
+                cookie);
+
+        assertEquals(responseEditUser.jsonPath().get("error"), errorInvalidFirstName);
+        assertEquals(responseEditUser.statusCode(), badStatusCode);
+    }
+
 }
