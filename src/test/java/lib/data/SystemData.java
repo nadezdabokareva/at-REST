@@ -7,6 +7,7 @@ public class SystemData {
     public static String requiredParamMissingMessage = "The following required params are missed: ";
     public static String errorUserCanEditOnlyOwnData = "This user can only edit their own data.";
     public static String errorAuthToken = "Auth token not supplied";
+    public static String errorInvalidEmail = "Invalid email format";
     public static String answer = "Users with email \'" + DataForTest.existingEmail +"\' already exists";
     public static int successfulStatusCode = 200;
     public static int badStatusCode = 400;

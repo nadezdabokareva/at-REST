@@ -119,7 +119,11 @@ public class EditUserCardTest {
         editData.put(SystemData.firstNameField, newName);
 
         //изменяем данные пользователя
-        Response responseEditUser = ApiCoreResults.editElseUserResponse(id, editData, header, cookie);
+        Response responseEditUser = ApiCoreResults.editElseUserResponse(
+                id,
+                editData,
+                header,
+                cookie);
 
         assertEquals(responseEditUser.jsonPath().get("error"), errorUserCanEditOnlyOwnData);
         assertEquals(responseEditUser.statusCode(), badStatusCode);
@@ -127,7 +131,8 @@ public class EditUserCardTest {
     }
 
     @DisplayName("Change user data with incorrect email")
-    @Description("Попытаемся изменить email пользователя, будучи авторизованными тем же пользователем, на новый email без символа @ ")
+    @Description("Попытаемся изменить email пользователя, будучи авторизованными " +
+            "тем же пользователем, на новый email без символа @ ")
     @Test
     public void editUserDataWithIncorrectEmailTest(){
         //создаем нового пользователя
@@ -135,15 +140,23 @@ public class EditUserCardTest {
 
         int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
 
+        //        авторизация ранее созданного юзера
+        Response authUserData = ApiCoreResults.authUserData();
+        cookie = authUserData.getCookie("auth_sid");
+        header = authUserData.getHeader("x-csrf-token");
 
         //создание данных для изменения
         Map<String, String> editData = new HashMap<>();
-        editData.put(SystemData.firstNameField, newName);
+        editData.put(emailField, badEmail);
 
-        //изменяем данные пользователя без авторизации
-        Response responseEditUser = ApiCoreResults.editUserWithoutHeadersResponse(id, editData);
+        //изменяем данные пользователя с некорректным email
+        Response responseEditUser = ApiCoreResults.editUserResponse(
+                id,
+                editData,
+                header,
+                cookie);
 
-        assertEquals(responseEditUser.jsonPath().get("error"), errorAuthToken);
+        assertEquals(responseEditUser.jsonPath().get("error"), errorInvalidEmail);
         assertEquals(responseEditUser.statusCode(), badStatusCode);
     }
 

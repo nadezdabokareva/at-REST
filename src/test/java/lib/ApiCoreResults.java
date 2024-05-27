@@ -183,7 +183,7 @@ public class ApiCoreResults {
                 .header("x-csrf-token", header)
                 .cookie("auth_sid", cookie)
                 .body(editData)
-                .put(baseUrl + userCard(String.valueOf(id - 1)))
+                .put(baseUrl + userCard(String.valueOf(id)))
                 .andReturn();
         return responseEditUser;
     }
