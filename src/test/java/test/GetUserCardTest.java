@@ -1,5 +1,6 @@
 package test;
 
+import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
@@ -8,6 +9,7 @@ import lib.*;
 import lib.data.BaseUrl;
 import lib.data.DataForTest;
 import lib.data.SystemData;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -25,6 +27,8 @@ public class GetUserCardTest extends BaseTestCase {
     String cookie;
     String header;
 
+    @Description("Получение данных только что зарегистрированного пользователя")
+    @DisplayName("Successful get user data")
     @Test
     public void getJustCreatedUserCardTest(){
         Response responseCreateAuth = ApiCoreResults.createUser();
@@ -39,6 +43,8 @@ public class GetUserCardTest extends BaseTestCase {
         Assertions.assertJsonHasField(getUserCard, SystemData.usernameField);
     }
 
+    @Description("Получение данных не зарегистрированного пользователя")
+    @DisplayName("unsuccessful get user data")
     @Test
     public void getNotAuthUserCardTest(){
         Response getUserCard = RestAssured
@@ -53,6 +59,8 @@ public class GetUserCardTest extends BaseTestCase {
 
     }
 
+    @Description("Получение данных только что зарегистрированного пользователя -- вторая версия с подробными запросами")
+    @DisplayName("Successful get user data")
     @Test
     public void getAuthUserCardTest(){
         Map<String, String> authData = new HashMap<>();
@@ -80,6 +88,37 @@ public class GetUserCardTest extends BaseTestCase {
         String[] expectedFieldsForCard = {"id", "username", "email", "firstName", "lastName"};
 
         Assertions.assertJsonHasFields(getUserCard, expectedFieldsForCard);
+    }
+
+    @Description("Получение данных пользователя с чужим id")
+    @DisplayName("Get user data with else id")
+    @Test
+    public void getUserDataWithElseIdTest(){
+
+
+        Response responseCreateAuth = ApiCoreResults.createUser();
+
+        int id = Integer.parseInt(responseCreateAuth.jsonPath().getString("id"));
+
+        Map<String, String> authData = new HashMap<>();
+        authData.put(SystemData.emailField, DataForTest.existingEmail);
+        authData.put(SystemData.passwordField, DataForTest.password);
+
+        Response responseGetAuth = RestAssured
+                .given()
+                .body(authData)
+                .post(baseUrl + userLogin)
+                .andReturn();
+
+        this.cookie = this.getCookie(responseGetAuth, SystemData.authSid);
+        this.header = this.getHeader(responseGetAuth, SystemData.csrfToken);
+
+        Response getUserCard = RestAssured
+                .given()
+                .get((baseUrl + api.userCard(String.valueOf(id-1))))
+                .andReturn();
+
+       getUserCard.print();
     }
 
 
